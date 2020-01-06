@@ -1,16 +1,17 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
-public class GameViewUtils
+public static class GameViewUtils
 {
-    static readonly object gameViewSizesInstance;
-    static readonly MethodInfo getGroup;
-    private static int screenIndex = 16; // Because have 16 indexes in my list.
+    private static readonly object gameViewSizesInstance;
+    private static readonly MethodInfo getGroup;
+    private static int screenIndex = 18;
     private static int gameViewProfilesCount;
 
     static GameViewUtils()
     {
-        // gameViewSizesInstance  = ScriptableSingleton<GameViewSizes>.instance;
         var sizesType = typeof(Editor).Assembly.GetType("UnityEditor.GameViewSizes");
         var singleType = typeof(ScriptableSingleton<>).MakeGenericType(sizesType);
         var instanceProp = singleType.GetProperty("instance");
@@ -24,6 +25,50 @@ public class GameViewUtils
         FixedResolution
     }
 
+    public static int FindSize(GameViewSizeGroupType sizeGroupType, int width, int height)
+    {
+        // goal:
+        // GameViewSizes group = gameViewSizesInstance.GetGroup(sizeGroupType);
+        // int sizesCount = group.GetBuiltinCount() + group.GetCustomCount();
+        // iterate through the sizes via group.GetGameViewSize(int index)
+
+        var group = GetGroup(sizeGroupType);
+        var groupType = group.GetType();
+        var getBuiltinCount = groupType.GetMethod("GetBuiltinCount");
+        var getCustomCount = groupType.GetMethod("GetCustomCount");
+        int sizesCount = (int) getBuiltinCount.Invoke(group, null) + (int) getCustomCount.Invoke(group, null);
+        var getGameViewSize = groupType.GetMethod("GetGameViewSize");
+        var gvsType = getGameViewSize.ReturnType;
+        var widthProp = gvsType.GetProperty("width");
+        var heightProp = gvsType.GetProperty("height");
+        var indexValue = new object[1];
+        for (int i = 0; i < sizesCount; i++)
+        {
+            indexValue[0] = i;
+            var size = getGameViewSize.Invoke(group, indexValue);
+            int sizeWidth = (int) widthProp.GetValue(size, null);
+            int sizeHeight = (int) heightProp.GetValue(size, null);
+            if (sizeWidth == width && sizeHeight == height)
+                return i;
+        }
+
+        return -1;
+    }
+
+    public static void AddCustomSize(int width, int height, string text)
+    {
+        // GameViewSizes group = gameViewSizesInstance.GetGroup(sizeGroupTyge);
+        // group.AddCustomSize(new GameViewSize(viewSizeType, width, height, text);
+
+        var group = GetGroup(GameViewSizeGroupType.Android);
+        var addCustomSize = getGroup.ReturnType.GetMethod("AddCustomSize"); // or group.GetType().
+        var gvsType = typeof(Editor).Assembly.GetType("UnityEditor.GameViewSize");
+        var gvstType = typeof(Editor).Assembly.GetType("UnityEditor.GameViewSizeType");
+        var ctor = gvsType.GetConstructor(new Type[] {gvstType, typeof(int), typeof(int), typeof(string)});
+        var newSize = ctor.Invoke(new object[] {(int) GameViewSizeType.FixedResolution, width, height, text});
+        addCustomSize.Invoke(group, new object[] {newSize});
+    }
+
     public static void SetSize(int index)
     {
         var gvWndType = typeof(Editor).Assembly.GetType("UnityEditor.GameView");
@@ -31,6 +76,12 @@ public class GameViewUtils
         var SizeSelectionCallback = gvWndType.GetMethod("SizeSelectionCallback",
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         SizeSelectionCallback.Invoke(gvWnd, new object[] {index, null});
+        
+        /*var gameCanvases = GameObject.FindObjectsOfType<Canvas>();
+        foreach (var gameCanvas in gameCanvases)
+        {
+            EditorUtility.SetDirty(gameCanvas);
+        }*/
     }
 
     static object GetGroup(GameViewSizeGroupType type)
