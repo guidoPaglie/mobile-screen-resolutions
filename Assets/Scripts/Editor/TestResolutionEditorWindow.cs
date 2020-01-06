@@ -1,9 +1,12 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 // This page was used to check most important resolutions
 // https://mediag.com/blog/popular-screen-resolutions-designing-for-all/
 
+[ExecuteInEditMode]
 public class TestResolutionEditorWindow : EditorWindow
 {
     [MenuItem("Etermax/Test Resolution")]
@@ -11,11 +14,35 @@ public class TestResolutionEditorWindow : EditorWindow
     {
         GetWindow(typeof(TestResolutionEditorWindow)).Show();
     }
-    
-    [MenuItem("Etermax/Test sda")]
-    private static void ase()
+
+    [MenuItem("Etermax/Test")]
+    private static void Test()
     {
-        GameViewUtils.SetGameViewScale();
+        Assembly assembly = typeof(EditorWindow).Assembly;
+        Type type = assembly.GetType("UnityEditor.GameView");
+        EditorWindow v = GetWindow(type);
+  
+        //whatever scale you want when you click on play
+        var defaultScale = (float)type.GetProperty("minScale", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(v);
+  
+        var areaField = type.GetField("m_ZoomArea", BindingFlags.Instance | BindingFlags.NonPublic);
+        var areaObj = areaField.GetValue(v);
+  
+        var scaleField = areaObj.GetType().GetField("m_Scale", BindingFlags.Instance | BindingFlags.NonPublic);
+        scaleField.SetValue(areaObj, new Vector2(defaultScale, defaultScale));
+    }
+
+    [MenuItem("Etermax/Debug Min Scale")]
+    private static void MinScale()
+    {
+        Assembly assembly = typeof(EditorWindow).Assembly;
+        Type type = assembly.GetType("UnityEditor.GameView");
+        EditorWindow v = GetWindow(type);
+  
+        //whatever scale you want when you click on play
+        var minScale = (float)type.GetProperty("minScale", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(v);
+  
+        UnityEngine.Debug.LogError("min scale: " + minScale);
     }
     
     private void OnGUI()
@@ -52,13 +79,33 @@ public class TestResolutionEditorWindow : EditorWindow
     private void Resize(int width, int height, string text)
     {
         // TODO Refactor to not search twice.
-        var index = GameViewUtils.FindSize(GameViewSizeGroupType.Android, width, height);
+        var index = GameViewUtilsOld.FindSize(GameViewSizeGroupType.Android, width, height);
         if (index == -1)
-            GameViewUtils.AddCustomSize(GameViewUtils.GameViewSizeType.FixedResolution, GameViewSizeGroupType.Android,
+            GameViewUtilsOld.AddCustomSize(GameViewUtilsOld.GameViewSizeType.FixedResolution, GameViewSizeGroupType.Android,
                 width, height, text);
 
-        GameViewUtils.SetSize(GameViewUtils.FindSize(GameViewSizeGroupType.Android, width, height));
-        
-        GameViewUtils.SetGameViewScale();
+        GameViewUtils.SetSize(GameViewUtilsOld.FindSize(GameViewSizeGroupType.Android, width, height));
+
+       // GameViewUtils.SetMinScale3();
+        //m_supposedToCheckTime = true;
+    }
+    
+    bool m_supposedToCheckTime = false;
+    float m_time = 0.0f;
+     
+    void Update()
+    {
+        if (m_supposedToCheckTime)
+        {
+            m_time += 0.01f;
+         
+            if (m_time >= .05f)
+            {
+                m_time = 0.0f;
+                m_supposedToCheckTime = false;
+                
+                GameViewUtilsOld.SetMinScale2();
+            }
+        }
     }
 }
