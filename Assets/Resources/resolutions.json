@@ -1,0 +1,7 @@
+{
+  "CommonPhones" :
+  [
+    {"Company" : "Apple", "Name" : "iPhone X", "Resolution" : {"Width":1125, "Height" : 2436}, "Tooltip" : "Same resolution as iPhone XS"},
+    {"Company" : "Android", "Name" : "S10", "Resolution" : {"Width":1440, "Height" : 3040}, "Tooltip" : "Same as S10+"}
+  ] 
+}

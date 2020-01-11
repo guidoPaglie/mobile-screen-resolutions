@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using UnityEditor;
-using UnityEngine;
 
 public static class GameViewUtils
 {
@@ -27,11 +26,6 @@ public static class GameViewUtils
 
     public static int FindSize(GameViewSizeGroupType sizeGroupType, int width, int height)
     {
-        // goal:
-        // GameViewSizes group = gameViewSizesInstance.GetGroup(sizeGroupType);
-        // int sizesCount = group.GetBuiltinCount() + group.GetCustomCount();
-        // iterate through the sizes via group.GetGameViewSize(int index)
-
         var group = GetGroup(sizeGroupType);
         var groupType = group.GetType();
         var getBuiltinCount = groupType.GetMethod("GetBuiltinCount");
@@ -57,9 +51,6 @@ public static class GameViewUtils
 
     public static void AddCustomSize(int width, int height, string text)
     {
-        // GameViewSizes group = gameViewSizesInstance.GetGroup(sizeGroupTyge);
-        // group.AddCustomSize(new GameViewSize(viewSizeType, width, height, text);
-
         var group = GetGroup(GameViewSizeGroupType.Android);
         var addCustomSize = getGroup.ReturnType.GetMethod("AddCustomSize"); // or group.GetType().
         var gvsType = typeof(Editor).Assembly.GetType("UnityEditor.GameViewSize");
@@ -89,7 +80,7 @@ public static class GameViewUtils
         return getGroup.Invoke(gameViewSizesInstance, new object[] {(int) type});
     }
 
-    [MenuItem("Tools/GameViewSize/Previous %&Q")]
+   /* [MenuItem("Tools/GameViewSize/Previous %&Q")]
     private static void SetPrevious()
     {
         GetViewListSize();
@@ -119,7 +110,7 @@ public static class GameViewUtils
         }
 
         SetSize(screenIndex);
-    }
+    }*/
 
     private static void GetViewListSize()
     {
