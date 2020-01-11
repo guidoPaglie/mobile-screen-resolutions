@@ -17,23 +17,6 @@ namespace Editor
             GetWindow(typeof(TestResolutionEditorWindow), false, "Resolutions").Show();
         }
 
-        [MenuItem("Etermax/Test 2")]
-        private static void Init2()
-        {
-            var resolutionsJson = Resources.Load<TextAsset>("resolutions");
-            UnityEngine.Debug.LogError(resolutionsJson);
-            var phones = JsonUtility.FromJson<Phones>(resolutionsJson.text);
-
-            var phonebycompany = phones.CommonPhones
-                .GroupBy(phone => phone.Company)
-                .ToDictionary(g => g.Key, g => g.ToList());
-
-            UnityEngine.Debug.LogError(phonebycompany["Android"].Count);
-            UnityEngine.Debug.LogError(phonebycompany["Android"][0].Name);
-            UnityEngine.Debug.LogError(phonebycompany["Apple"].Count);
-            UnityEngine.Debug.LogError(phonebycompany["Apple"][0].Name);
-        }
-
         private void OnEnable()
         {
             LoadJson();
@@ -55,26 +38,6 @@ namespace Editor
             {
                 PrintAllCompanyPhones(key, _phonesByCompany[key]);
             }
-
-            /*GUILayout.Label("Apple", EditorStyles.boldLabel);
-            GUILayout.Label("Phones");
-            PrintAllCompanyPhones("Apple");
-            DisplayButton("iPhone X", 1125, 2436, "Same resolution as iPhone XS");
-            DisplayButton("iPhone XR", 828, 1792);
-            DisplayButton("iPhone XS MAX", 1242, 2688);
-            DisplayButton("iPhone 8", 750, 1334, "Same resolution as iPhone 7 & 6");
-            DisplayButton("iPhone 8 Plus", 1080, 1920, "Same resolution as iPhone 7 & 6 Plus");
-            GUILayout.Label("Tablet");
-            DisplayButton("iPad", 1536, 2048, "Same resolution as iPad 3 & 4, Air 1 & 2, Mini 2 & 3");
-            DisplayButton("iPad Pro", 2048, 2732);
-
-            GUILayout.Label("Android", EditorStyles.boldLabel);
-            GUILayout.Label("Phones");
-            DisplayButton("S10", 1440, 3040, "Same as S10+");
-            DisplayButton("S10e", 1080, 2280);
-            DisplayButton("S9", 1440, 2960, "Same as S9+, S8+, S8, S7");
-            DisplayButton("Pixel XL", 1440, 2560);
-            GUILayout.Label("Tablet");*/
         }
 
         private void PrintAllCompanyPhones(string company, List<Phone> phones)
