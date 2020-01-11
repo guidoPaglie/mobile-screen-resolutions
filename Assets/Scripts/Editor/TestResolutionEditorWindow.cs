@@ -10,15 +10,32 @@ namespace Editor
     public class TestResolutionEditorWindow : EditorWindow
     {
         private Dictionary<string, List<Phone>> _phonesByCompany = new Dictionary<string, List<Phone>>();
+        private bool _testing;
+        private float _currentTime;
 
         [MenuItem("Etermax/Test Resolution")]
         private static void Init()
         {
             GetWindow(typeof(TestResolutionEditorWindow), false, "Resolutions").Show();
         }
+        
+        
+        [MenuItem("Etermax/Set next #n")]
+        private static void NExt()
+        {
+            GameViewUtils.SetNext();
+        }
+        
+        [MenuItem("Etermax/Set prevois #p")]
+        private static void Previous()
+        {
+            GameViewUtils.SetPrevious();
+        }
 
         private void OnEnable()
         {
+            _currentTime = 0;
+            _testing = false;
             LoadJson();
         }
 
@@ -34,6 +51,25 @@ namespace Editor
 
         private void OnGUI()
         {
+            PrintTestPanel();
+            PrintResolutionsPanel();
+        }
+
+        private void PrintTestPanel()
+        {
+            var guiStyle = new GUIStyle() {wordWrap = true, padding = new RectOffset(10, 10, 10, 0)};
+            GUILayout.Label("Test all resolutions after finishing your prefab.", guiStyle);
+
+            if (GUILayout.Button("Start test"))
+                StartTest();
+
+
+            if (GUILayout.Button("STOP TEST"))
+                _testing = false;
+        }
+
+        private void PrintResolutionsPanel()
+        {
             foreach (var key in _phonesByCompany.Keys)
             {
                 PrintAllCompanyPhones(key, _phonesByCompany[key]);
@@ -44,7 +80,8 @@ namespace Editor
         {
             GUILayout.Label(company, EditorStyles.boldLabel);
             GUILayout.Label("Phones");
-            phones.ForEach(phone => DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip));
+            phones.ForEach(phone =>
+                DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip));
         }
 
         private void DisplayButton(string text, int width, int height, string tooltip)
@@ -52,8 +89,27 @@ namespace Editor
             var guiContent = new GUIContent(text + $" {width}x{height}", tooltip);
             var guiStyle = new GUIStyle("button") {alignment = TextAnchor.MiddleLeft};
 
-            if (GUILayout.Button(guiContent, guiStyle))
+            if (GUILayout.Button(guiContent, guiStyle) && !_testing)
                 Resize(width, height, text);
+        }
+
+        private void StartTest()
+        {
+            _testing = true;
+        }
+
+        private void Update()
+        {
+            if (!_testing)
+                return;
+
+            _currentTime += Time.fixedDeltaTime;
+
+            if (_currentTime >= 7)
+            {
+                _currentTime = 0;
+                GameViewUtils.SetNext();
+            }
         }
 
         private void Resize(int width, int height, string text)

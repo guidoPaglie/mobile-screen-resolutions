@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using UnityEditor;
 
 public static class GameViewUtils
@@ -52,12 +51,12 @@ public static class GameViewUtils
     public static void AddCustomSize(int width, int height, string text)
     {
         var group = GetGroup(GameViewSizeGroupType.Android);
-        var addCustomSize = getGroup.ReturnType.GetMethod("AddCustomSize"); // or group.GetType().
+        var addCustomSize = getGroup.ReturnType.GetMethod("AddCustomSize");
         var gvsType = typeof(Editor).Assembly.GetType("UnityEditor.GameViewSize");
         var gvstType = typeof(Editor).Assembly.GetType("UnityEditor.GameViewSizeType");
-        var ctor = gvsType.GetConstructor(new Type[] {gvstType, typeof(int), typeof(int), typeof(string)});
+        var ctor = gvsType.GetConstructor(new[] {gvstType, typeof(int), typeof(int), typeof(string)});
         var newSize = ctor.Invoke(new object[] {(int) GameViewSizeType.FixedResolution, width, height, text});
-        addCustomSize.Invoke(group, new object[] {newSize});
+        addCustomSize.Invoke(group, new[] {newSize});
     }
 
     public static void SetSize(int index)
@@ -67,12 +66,6 @@ public static class GameViewUtils
         var SizeSelectionCallback = gvWndType.GetMethod("SizeSelectionCallback",
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         SizeSelectionCallback.Invoke(gvWnd, new object[] {index, null});
-        
-        /*var gameCanvases = GameObject.FindObjectsOfType<Canvas>();
-        foreach (var gameCanvas in gameCanvases)
-        {
-            EditorUtility.SetDirty(gameCanvas);
-        }*/
     }
 
     static object GetGroup(GameViewSizeGroupType type)
@@ -80,11 +73,10 @@ public static class GameViewUtils
         return getGroup.Invoke(gameViewSizesInstance, new object[] {(int) type});
     }
 
-   /* [MenuItem("Tools/GameViewSize/Previous %&Q")]
-    private static void SetPrevious()
+    public static void SetPrevious()
     {
         GetViewListSize();
-        if (screenIndex - 1 >= 16)
+        if (screenIndex - 1 >= 18)
         {
             screenIndex -= 1;
         }
@@ -96,8 +88,7 @@ public static class GameViewUtils
         SetSize(screenIndex);
     }
 
-    [MenuItem("Tools/GameViewSize/Next  %&E")]
-    private static void SetNext()
+    public static void SetNext()
     {
         GetViewListSize();
         if (screenIndex + 1 < gameViewProfilesCount)
@@ -106,16 +97,17 @@ public static class GameViewUtils
         }
         else
         {
-            screenIndex = 16;
+            screenIndex = 18;
         }
 
         SetSize(screenIndex);
-    }*/
+    }
 
     private static void GetViewListSize()
     {
         var group = GetGroup(GameViewSizeGroupType.Android);
         var getDisplayTexts = group.GetType().GetMethod("GetDisplayTexts");
         gameViewProfilesCount = (getDisplayTexts.Invoke(group, null) as string[]).Length;
+        UnityEngine.Debug.LogError("gameview profiles count : " + gameViewProfilesCount);
     }
 }
