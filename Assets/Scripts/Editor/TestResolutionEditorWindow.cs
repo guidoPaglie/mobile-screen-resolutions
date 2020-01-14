@@ -13,23 +13,10 @@ namespace Editor
         private bool _testing;
         private float _currentTime;
 
-        [MenuItem("Etermax/Test Resolution")]
+        [MenuItem("Window/Test Resolution")]
         private static void Init()
         {
             GetWindow(typeof(TestResolutionEditorWindow), false, "Resolutions").Show();
-        }
-        
-        
-        [MenuItem("Etermax/Set next #n")]
-        private static void NExt()
-        {
-            GameViewUtils.SetNext();
-        }
-        
-        [MenuItem("Etermax/Set prevois #p")]
-        private static void Previous()
-        {
-            GameViewUtils.SetPrevious();
         }
 
         private void OnEnable()

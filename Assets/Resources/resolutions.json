@@ -7,8 +7,7 @@
     {"Company" : "Apple", "Name" : "iPhone 8", "Resolution" : {"Width":750, "Height" : 1334}, "Tooltip" : "Same resolution as iPhone 7 & 6"},
     {"Company" : "Apple", "Name" : "iPhone 8 Plus", "Resolution" : {"Width":1080, "Height" : 1920}, "Tooltip" : "Same resolution as iPhone 7 & 6 Plus"},
     {"Company" : "Apple", "Name" : "iPad", "Resolution" : {"Width":1536, "Height" : 2048}, "Tooltip" : "Same resolution as iPad 3 & 4, Air 1 & 2, Mini 2 & 3"},
-    {"Company" : "Apple", "Name" : "iPad Pro", "Resolution" : {"Width":2048, "Height" : 2732}, "Tooltip" : ""},
-    {"Company" : "Apple", "Name" : "iPad Pro+", "Resolution" : {"Width":2048, "Height" : 2732}, "Tooltip" : ""},
+    {"Company" : "Apple", "Name" : "iPad Pro", "Resolution" : {"Width":2048, "Height" : 2732}, "Tooltip" : "Same as iPad Pro +"},
 
     {"Company" : "Android", "Name" : "S10", "Resolution" : {"Width":1440, "Height" : 3040}, "Tooltip" : "Same as S10+"},
     {"Company" : "Android", "Name" : "S10e", "Resolution" : {"Width":1080, "Height" : 2280}, "Tooltip" : ""},
