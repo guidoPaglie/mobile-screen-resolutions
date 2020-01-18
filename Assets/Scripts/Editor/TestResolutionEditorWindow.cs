@@ -18,6 +18,19 @@ namespace Editor
         {
             GetWindow(typeof(TestResolutionEditorWindow), false, "Resolutions").Show();
         }
+        
+        
+        [MenuItem("Etermax/Set next #n")]
+        private static void NExt()
+        {
+            GameViewUtils.SetNext();
+        }
+        
+        [MenuItem("Etermax/Set previous #p")]
+        private static void Previous()
+        {
+            GameViewUtils.SetPrevious();
+        }
 
         private void OnEnable()
         {
