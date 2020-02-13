@@ -8,7 +8,7 @@ namespace Editor
 {
     [ExecuteInEditMode]
     // ReSharper disable once RequiredBaseTypesIsNotInherited
-    public class TestResolutionEditorWindow : EditorWindow
+    public class MobileScreenResolutionsWindow : EditorWindow
     {
         private Dictionary<string, List<Phone>> _phonesByCompany = new Dictionary<string, List<Phone>>();
         private bool _testing;
@@ -17,7 +17,7 @@ namespace Editor
         [MenuItem("Etermax/Editor/Resolutions/Open window")]
         private static void Init()
         {
-            GetWindow(typeof(TestResolutionEditorWindow), false, "Resolutions").Show();
+            GetWindow(typeof(MobileScreenResolutionsWindow), false, "Resolutions").Show();
         }
 
         [MenuItem("Etermax/Editor/Resolutions/Set next #n")]
