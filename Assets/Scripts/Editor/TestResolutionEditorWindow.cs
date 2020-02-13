@@ -18,14 +18,13 @@ namespace Editor
         {
             GetWindow(typeof(TestResolutionEditorWindow), false, "Resolutions").Show();
         }
-        
-        
+
         [MenuItem("Etermax/Set next #n")]
         private static void NExt()
         {
             GameViewUtils.SetNext();
         }
-        
+
         [MenuItem("Etermax/Set previous #p")]
         private static void Previous()
         {
@@ -86,7 +85,7 @@ namespace Editor
 
         private void DisplayButton(string text, int width, int height, string tooltip)
         {
-            var guiContent = new GUIContent(text + $" {width}x{height}", tooltip);
+            var guiContent = new GUIContent(text + " " + width + "x" + height, tooltip);
             var guiStyle = new GUIStyle("button") {alignment = TextAnchor.MiddleLeft};
 
             if (GUILayout.Button(guiContent, guiStyle) && !_testing)
