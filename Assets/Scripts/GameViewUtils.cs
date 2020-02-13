@@ -57,6 +57,9 @@ public static class GameViewUtils
         var ctor = gvsType.GetConstructor(new[] {gvstType, typeof(int), typeof(int), typeof(string)});
         var newSize = ctor.Invoke(new object[] {(int) GameViewSizeType.FixedResolution, width, height, text});
         addCustomSize.Invoke(group, new[] {newSize});
+        
+        var sizesType = typeof(Editor).Assembly.GetType("UnityEditor.GameViewSizes");
+        sizesType.GetMethod("SaveToHDD").Invoke(gameViewSizesInstance, null);
     }
 
     public static void SetSize(int index)

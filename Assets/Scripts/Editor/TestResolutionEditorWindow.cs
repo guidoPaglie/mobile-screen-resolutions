@@ -13,19 +13,19 @@ namespace Editor
         private bool _testing;
         private float _currentTime;
 
-        [MenuItem("Window/Test Resolution")]
+        [MenuItem("Etermax/Editor/Resolutions/See common resolutions")]
         private static void Init()
         {
             GetWindow(typeof(TestResolutionEditorWindow), false, "Resolutions").Show();
         }
 
-        [MenuItem("Etermax/Set next #n")]
+        [MenuItem("Etermax/Editor/Resolutions/Set next #n")]
         private static void NExt()
         {
             GameViewUtils.SetNext();
         }
 
-        [MenuItem("Etermax/Set previous #p")]
+        [MenuItem("Etermax/Editor/Resolutions/Set previous #p")]
         private static void Previous()
         {
             GameViewUtils.SetPrevious();
