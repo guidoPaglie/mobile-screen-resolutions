@@ -7,6 +7,7 @@ using UnityEngine;
 namespace Editor
 {
     [ExecuteInEditMode]
+    // ReSharper disable once RequiredBaseTypesIsNotInherited
     public class TestResolutionEditorWindow : EditorWindow
     {
         private Dictionary<string, List<Phone>> _phonesByCompany = new Dictionary<string, List<Phone>>();
@@ -51,6 +52,7 @@ namespace Editor
         private void OnGUI()
         {
             PrintTestPanel();
+            PrintAddAllResolutionsPanel();
             PrintResolutionsPanel();
         }
 
@@ -62,9 +64,24 @@ namespace Editor
             if (GUILayout.Button("Start test"))
                 StartTest();
 
-
             if (GUILayout.Button("STOP TEST"))
                 StopTest();
+        }
+
+        private void PrintAddAllResolutionsPanel()
+        {
+            var guiStyle = new GUIStyle() {wordWrap = true, padding = new RectOffset(10, 10, 10, 0)};
+            GUILayout.Label("Add all the following resolutions to the dropdown in the game window.", guiStyle);
+
+            if (GUILayout.Button("Add resolutions"))
+            {
+                foreach (var key in _phonesByCompany.Keys)
+                {
+                    var phones = _phonesByCompany[key];
+
+                    phones.ForEach(phone => Resize(phone.Resolution.Width, phone.Resolution.Height, phone.Name));
+                }
+            }
         }
 
         private void PrintResolutionsPanel()
@@ -78,7 +95,7 @@ namespace Editor
         private void PrintAllCompanyPhones(string company, List<Phone> phones)
         {
             GUILayout.Label(company, EditorStyles.boldLabel);
-            GUILayout.Label("Phones");
+            GUILayout.Label("Devices");
             phones.ForEach(phone =>
                 DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip));
         }

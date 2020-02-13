@@ -111,6 +111,5 @@ public static class GameViewUtils
         var group = GetGroup(GameViewSizeGroupType.Android);
         var getDisplayTexts = group.GetType().GetMethod("GetDisplayTexts");
         gameViewProfilesCount = (getDisplayTexts.Invoke(group, null) as string[]).Length;
-        UnityEngine.Debug.LogError("gameview profiles count : " + gameViewProfilesCount);
     }
 }
