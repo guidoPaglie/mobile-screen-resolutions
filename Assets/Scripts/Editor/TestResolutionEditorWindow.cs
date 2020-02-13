@@ -64,7 +64,7 @@ namespace Editor
 
 
             if (GUILayout.Button("STOP TEST"))
-                _testing = false;
+                StopTest();
         }
 
         private void PrintResolutionsPanel()
@@ -95,6 +95,12 @@ namespace Editor
         private void StartTest()
         {
             _testing = true;
+            _currentTime = 0.0f;
+        }
+
+        private void StopTest()
+        {
+            _testing = false;
         }
 
         private void Update()
@@ -104,7 +110,7 @@ namespace Editor
 
             _currentTime += Time.fixedDeltaTime;
 
-            if (_currentTime >= 7)
+            if (_currentTime >= 7) // is not in seconds...is almost 2 3 seconds
             {
                 _currentTime = 0;
                 GameViewUtils.SetNext();
