@@ -1,6 +1,8 @@
+using System;
+
 namespace Domain
 {
-    [System.Serializable]
+    [Serializable]
     public class Phone
     {
         public string Company;

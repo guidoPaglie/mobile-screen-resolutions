@@ -14,7 +14,7 @@ namespace Editor
         private bool _testing;
         private float _currentTime;
 
-        [MenuItem("Etermax/Editor/Resolutions/See common resolutions")]
+        [MenuItem("Etermax/Editor/Resolutions/Open window")]
         private static void Init()
         {
             GetWindow(typeof(TestResolutionEditorWindow), false, "Resolutions").Show();
@@ -64,7 +64,7 @@ namespace Editor
             if (GUILayout.Button("Start test"))
                 StartTest();
 
-            if (GUILayout.Button("STOP TEST"))
+            if (GUILayout.Button("Stop test"))
                 StopTest();
         }
 

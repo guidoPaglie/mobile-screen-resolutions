@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+using System;
 
 namespace Domain
 {
-    [System.Serializable]
+    [Serializable]
     public class Resolution
     {
         public int Width;
