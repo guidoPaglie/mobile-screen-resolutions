@@ -10,7 +10,7 @@ namespace Editor
     // ReSharper disable once RequiredBaseTypesIsNotInherited
     public class MobileScreenResolutionsWindow : EditorWindow
     {
-        private Dictionary<string, List<Phone>> _phonesByCompany = new Dictionary<string, List<Phone>>();
+        private List<Phone> _phones = new List<Phone>();
         private bool _testing;
         private float _currentTime;
 
@@ -44,16 +44,14 @@ namespace Editor
             var resolutionsJson = Resources.Load<TextAsset>("resolutions");
             var phones = JsonUtility.FromJson<Phones>(resolutionsJson.text);
 
-            _phonesByCompany = phones.CommonPhones
-                .GroupBy(phone => phone.Company)
-                .ToDictionary(g => g.Key, g => g.ToList());
+            _phones = phones.CommonPhones;
         }
 
         private void OnGUI()
         {
             PrintTestPanel();
             PrintAddAllResolutionsPanel();
-            PrintResolutionsPanel();
+            PrintAllPhones();
         }
 
         private void PrintTestPanel()
@@ -75,29 +73,44 @@ namespace Editor
 
             if (GUILayout.Button("Add resolutions"))
             {
-                foreach (var key in _phonesByCompany.Keys)
+                foreach (var phone in _phones)
                 {
-                    var phones = _phonesByCompany[key];
-
-                    phones.ForEach(phone => Resize(phone.Resolution.Width, phone.Resolution.Height, phone.Name));
+                    Resize(phone.Resolution.Width, phone.Resolution.Height, phone.Name);
                 }
             }
         }
 
-        private void PrintResolutionsPanel()
+        private void PrintAllPhones()
         {
-            foreach (var key in _phonesByCompany.Keys)
-            {
-                PrintAllCompanyPhones(key, _phonesByCompany[key]);
-            }
+            GUILayout.Label("Devices", EditorStyles.boldLabel);
+
+            _phones = _phones.OrderBy(phone => (float) phone.Resolution.Width / phone.Resolution.Height).ToList();
+
+            var importantResolutions = new List<Phone>()
+                {_phones[0], _phones[_phones.Count / 2], _phones[_phones.Count - 1]};
+            
+            DisplayImportantResolution("Smaller", importantResolutions[0]);
+            DisplayImportantResolution("Medium", importantResolutions[1]);
+            DisplayImportantResolution("Smaller", importantResolutions[2]);
+            
+
+            GUILayout.Label("Others", EditorStyles.boldLabel);
+            var otherResolutions = new List<Phone>();
+            otherResolutions.AddRange(_phones.Except(importantResolutions));
+            otherResolutions.ForEach(phone => DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip));
         }
 
-        private void PrintAllCompanyPhones(string company, List<Phone> phones)
+        private void DisplayImportantResolution(string text, Phone phone1)
         {
-            GUILayout.Label(company, EditorStyles.boldLabel);
-            GUILayout.Label("Devices");
-            phones.ForEach(phone =>
-                DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip));
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(text);
+            DisplayButton(phone1);
+            GUILayout.EndHorizontal();
+        }
+
+        private void DisplayButton(Phone phone)
+        {
+            DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip);
         }
 
         private void DisplayButton(string text, int width, int height, string tooltip)

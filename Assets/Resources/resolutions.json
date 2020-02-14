@@ -10,6 +10,7 @@
     {"Company" : "Apple", "Name" : "iPad Pro", "Resolution" : {"Width":2048, "Height" : 2732}, "Tooltip" : "Same as iPad Pro +"},
 
     {"Company" : "Android", "Name" : "S10", "Resolution" : {"Width":1440, "Height" : 3040}, "Tooltip" : "Same as S10+"},
-    {"Company" : "Android", "Name" : "S10e", "Resolution" : {"Width":1080, "Height" : 2280}, "Tooltip" : ""}
+    {"Company" : "Android", "Name" : "S10e", "Resolution" : {"Width":1080, "Height" : 2280}, "Tooltip" : ""},
+    {"Company" : "Android", "Name" : "S8", "Resolution" : {"Width":1440, "Height" : 2960}, "Tooltip" : ""}
   ] 
 }
