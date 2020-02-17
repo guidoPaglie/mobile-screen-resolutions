@@ -7,5 +7,10 @@ namespace Domain
     {
         public int Width;
         public int Height;
+
+        public float Get()
+        {
+            return (float) Width / Height;
+        }
     }
 }

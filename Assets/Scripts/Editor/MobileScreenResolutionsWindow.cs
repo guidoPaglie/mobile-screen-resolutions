@@ -3,6 +3,7 @@ using System.Linq;
 using Domain;
 using UnityEditor;
 using UnityEngine;
+using Resolution = Domain.Resolution;
 
 namespace Editor
 {
@@ -84,28 +85,44 @@ namespace Editor
         {
             GUILayout.Label("Devices", EditorStyles.boldLabel);
 
-            _phones = _phones.OrderBy(phone => (float) phone.Resolution.Width / phone.Resolution.Height).ToList();
+            _phones = _phones.OrderBy(phone => phone.Resolution.Get()).ToList();
 
-            var importantResolutions = new List<Phone>()
-                {_phones[0], _phones[_phones.Count / 2], _phones[_phones.Count - 1]};
-            
+            var importantResolutions = new List<Phone>() {_phones[0], CalculateTheMedium(), _phones[_phones.Count - 1]};
+
             DisplayImportantResolution("Smaller", importantResolutions[0]);
             DisplayImportantResolution("Medium", importantResolutions[1]);
-            DisplayImportantResolution("Smaller", importantResolutions[2]);
-            
+            DisplayImportantResolution("Bigger", importantResolutions[2]);
 
             GUILayout.Label("Others", EditorStyles.boldLabel);
             var otherResolutions = new List<Phone>();
             otherResolutions.AddRange(_phones.Except(importantResolutions));
-            otherResolutions.ForEach(phone => DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip));
+            otherResolutions.ForEach(phone =>
+                DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip));
+        }
+
+        private Phone CalculateTheMedium()
+        {
+            var exactlyMiddleResolution =
+                (_phones[0].Resolution.Get() + _phones[_phones.Count - 1].Resolution.Get()) / 2.0f;
+            var aux = float.MaxValue;
+            for (int i = 1; i < _phones.Count - 2; i++)
+            {
+                if (Mathf.Abs(exactlyMiddleResolution - _phones[i].Resolution.Get()) <
+                    Mathf.Abs(exactlyMiddleResolution - _phones[i + 1].Resolution.Get()))
+                {
+                    return _phones[i];
+                }
+            }
+
+            return _phones[_phones.Count / 2];
         }
 
         private void DisplayImportantResolution(string text, Phone phone1)
         {
-            GUILayout.BeginHorizontal();
+            //GUILayout.BeginHorizontal();
             GUILayout.Label(text);
             DisplayButton(phone1);
-            GUILayout.EndHorizontal();
+            //GUILayout.EndHorizontal();
         }
 
         private void DisplayButton(Phone phone)
