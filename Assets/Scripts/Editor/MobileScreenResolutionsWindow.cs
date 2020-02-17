@@ -3,7 +3,6 @@ using System.Linq;
 using Domain;
 using UnityEditor;
 using UnityEngine;
-using Resolution = Domain.Resolution;
 
 namespace Editor
 {
