@@ -19,7 +19,7 @@ namespace Editor
         }
 
         [MenuItem("Etermax/Editor/Resolutions/Set next #n")]
-        private static void NExt()
+        private static void Next()
         {
             GameViewUtils.SetNext();
         }
@@ -46,6 +46,7 @@ namespace Editor
         private void OnGUI()
         {
             PrintAddAllResolutionsPanel();
+            PrintDeleteAllResolutions();
             PrintAllPhones();
         }
 
@@ -60,6 +61,14 @@ namespace Editor
                 {
                     Resize(phone.Resolution.Width, phone.Resolution.Height, phone.Name);
                 }
+            }
+        }
+
+        private void PrintDeleteAllResolutions()
+        {
+            if (GUILayout.Button("Remove resolutions"))
+            {
+                GameViewUtils.RemoveResolutions();
             }
         }
 
@@ -121,11 +130,13 @@ namespace Editor
         private void Resize(int width, int height, string text)
         {
             // TODO Refactor to not search twice.
-            var index = GameViewUtils.FindSize(GameViewSizeGroupType.Android, width, height);
+            var index = GameViewUtils.FindSize(width, height);
             if (index == -1)
                 GameViewUtils.AddCustomSize(width, height, text);
 
-            GameViewUtils.SetSize(GameViewUtils.FindSize(GameViewSizeGroupType.Android, width, height));
+            GameViewUtils.SetSize(GameViewUtils.FindSize(width, height));
         }
+
+      
     }
 }

@@ -5,8 +5,8 @@ public static class GameViewUtils
 {
     private static readonly object gameViewSizesInstance;
     private static readonly MethodInfo getGroup;
-    private static int screenIndex = 18;
-    private static int gameViewProfilesCount;
+    private static int screenIndex;
+    private static int totalResolutions;
 
     static GameViewUtils()
     {
@@ -15,6 +15,8 @@ public static class GameViewUtils
         var instanceProp = singleType.GetProperty("instance");
         getGroup = sizesType.GetMethod("GetGroup");
         gameViewSizesInstance = instanceProp.GetValue(null, null);
+
+        screenIndex = GetBuiltinCount();
     }
 
     private enum GameViewSizeType
@@ -23,9 +25,9 @@ public static class GameViewUtils
         FixedResolution
     }
 
-    public static int FindSize(GameViewSizeGroupType sizeGroupType, int width, int height)
+    public static int FindSize(int width, int height)
     {
-        var group = GetGroup(sizeGroupType);
+        var group = GetGroup();
         var groupType = group.GetType();
         var getBuiltinCount = groupType.GetMethod("GetBuiltinCount");
         var getCustomCount = groupType.GetMethod("GetCustomCount");
@@ -50,7 +52,7 @@ public static class GameViewUtils
 
     public static void AddCustomSize(int width, int height, string text)
     {
-        var group = GetGroup(GameViewSizeGroupType.Android);
+        var group = GetGroup();
         var addCustomSize = getGroup.ReturnType.GetMethod("AddCustomSize");
         var gvsType = typeof(Editor).Assembly.GetType("UnityEditor.GameViewSize");
         var gvstType = typeof(Editor).Assembly.GetType("UnityEditor.GameViewSizeType");
@@ -71,21 +73,16 @@ public static class GameViewUtils
         SizeSelectionCallback.Invoke(gvWnd, new object[] {index, null});
     }
 
-    static object GetGroup(GameViewSizeGroupType type)
-    {
-        return getGroup.Invoke(gameViewSizesInstance, new object[] {(int) type});
-    }
-
     public static void SetPrevious()
     {
-        GetViewListSize();
-        if (screenIndex - 1 >= 18)
+        CalculateTotalResolutions();
+        if (screenIndex - 1 >= GetBuiltinCount())
         {
             screenIndex -= 1;
         }
         else
         {
-            screenIndex = gameViewProfilesCount - 1;
+            screenIndex = totalResolutions - 1;
         }
 
         SetSize(screenIndex);
@@ -93,23 +90,64 @@ public static class GameViewUtils
 
     public static void SetNext()
     {
-        GetViewListSize();
-        if (screenIndex + 1 < gameViewProfilesCount)
+        CalculateTotalResolutions();
+        if (screenIndex + 1 < totalResolutions)
         {
             screenIndex += 1;
         }
         else
         {
-            screenIndex = 18;
+            screenIndex = GetBuiltinCount();
         }
 
         SetSize(screenIndex);
     }
 
-    private static void GetViewListSize()
+    public static void RemoveResolutions()
     {
-        var group = GetGroup(GameViewSizeGroupType.Android);
+        CalculateTotalResolutions();
+
+        var defaultResolutions = GetBuiltinCount();
+        var extraResolutions = totalResolutions - defaultResolutions;
+        var group = GetGroup();
+        var removeCustomSize = getGroup.ReturnType.GetMethod("RemoveCustomSize");
+
+        for (int i = 0; i < extraResolutions; i++)
+        {
+            removeCustomSize.Invoke(group, new object[] {0 + defaultResolutions});
+        }
+
+        SetSize(0);
+    }
+
+    private static void CalculateTotalResolutions()
+    {
+        var group = GetGroup();
         var getDisplayTexts = group.GetType().GetMethod("GetDisplayTexts");
-        gameViewProfilesCount = (getDisplayTexts.Invoke(group, null) as string[]).Length;
+        totalResolutions = (getDisplayTexts.Invoke(group, null) as string[]).Length;
+    }
+
+    private static GameViewSizeGroupType Platform
+    {
+        get
+        {
+#if UNITY_ANDROID
+            return GameViewSizeGroupType.Android;
+#elif UNITY_IOS
+            return GameViewSizeGroupType.iOS;
+#endif
+        }
+    }
+
+    private static int GetBuiltinCount()
+    {
+        var group = GetGroup();
+        var getBuiltinCount = getGroup.ReturnType.GetMethod("GetBuiltinCount");
+        return (int) getBuiltinCount.Invoke(group, null);
+    }
+
+    private static object GetGroup()
+    {
+        return getGroup.Invoke(gameViewSizesInstance, new object[] {(int) Platform});
     }
 }
