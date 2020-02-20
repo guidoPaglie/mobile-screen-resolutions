@@ -95,15 +95,14 @@ namespace Editor
             GUILayout.Label("Others", EditorStyles.boldLabel);
             var otherResolutions = new List<Phone>();
             otherResolutions.AddRange(_phones.Except(importantResolutions));
-            otherResolutions.ForEach(phone =>
-                DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip));
+            otherResolutions.ForEach(DisplayButton);
         }
 
         private Phone CalculateTheMedium()
         {
-            var exactlyMiddleResolution =
-                (_phones[0].Resolution.Get() + _phones[_phones.Count - 1].Resolution.Get()) / 2.0f;
-            var aux = float.MaxValue;
+            var smallerResolution = _phones[0].Resolution;
+            var biggestResolution = _phones[_phones.Count - 1].Resolution;
+            var exactlyMiddleResolution = (smallerResolution.Get() + biggestResolution.Get()) / 2.0f;
             for (int i = 1; i < _phones.Count - 2; i++)
             {
                 if (Mathf.Abs(exactlyMiddleResolution - _phones[i].Resolution.Get()) <
@@ -116,12 +115,10 @@ namespace Editor
             return _phones[_phones.Count / 2];
         }
 
-        private void DisplayImportantResolution(string text, Phone phone1)
+        private void DisplayImportantResolution(string text, Phone phone)
         {
-            //GUILayout.BeginHorizontal();
             GUILayout.Label(text);
-            DisplayButton(phone1);
-            //GUILayout.EndHorizontal();
+            DisplayButton(phone);
         }
 
         private void DisplayButton(Phone phone)
