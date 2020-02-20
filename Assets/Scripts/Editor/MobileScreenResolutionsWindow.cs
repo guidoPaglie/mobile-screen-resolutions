@@ -11,8 +11,6 @@ namespace Editor
     public class MobileScreenResolutionsWindow : EditorWindow
     {
         private List<Phone> _phones = new List<Phone>();
-        private bool _testing;
-        private float _currentTime;
 
         [MenuItem("Etermax/Editor/Resolutions/Open window")]
         private static void Init()
@@ -34,8 +32,6 @@ namespace Editor
 
         private void OnEnable()
         {
-            _currentTime = 0;
-            _testing = false;
             LoadJson();
         }
 
@@ -49,21 +45,8 @@ namespace Editor
 
         private void OnGUI()
         {
-            PrintTestPanel();
             PrintAddAllResolutionsPanel();
             PrintAllPhones();
-        }
-
-        private void PrintTestPanel()
-        {
-            var guiStyle = new GUIStyle() {wordWrap = true, padding = new RectOffset(10, 10, 10, 0)};
-            GUILayout.Label("Test all resolutions after finishing your prefab.", guiStyle);
-
-            if (GUILayout.Button("Start test"))
-                StartTest();
-
-            if (GUILayout.Button("Stop test"))
-                StopTest();
         }
 
         private void PrintAddAllResolutionsPanel()
@@ -131,33 +114,8 @@ namespace Editor
             var guiContent = new GUIContent(text + " " + width + "x" + height, tooltip);
             var guiStyle = new GUIStyle("button") {alignment = TextAnchor.MiddleLeft};
 
-            if (GUILayout.Button(guiContent, guiStyle) && !_testing)
+            if (GUILayout.Button(guiContent, guiStyle))
                 Resize(width, height, text);
-        }
-
-        private void StartTest()
-        {
-            _testing = true;
-            _currentTime = 0.0f;
-        }
-
-        private void StopTest()
-        {
-            _testing = false;
-        }
-
-        private void Update()
-        {
-            if (!_testing)
-                return;
-
-            _currentTime += Time.fixedDeltaTime;
-
-            if (_currentTime >= 7) // is not in seconds...is almost 2 3 seconds
-            {
-                _currentTime = 0;
-                GameViewUtils.SetNext();
-            }
         }
 
         private void Resize(int width, int height, string text)
