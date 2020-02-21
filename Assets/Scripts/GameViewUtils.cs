@@ -136,6 +136,7 @@ public static class GameViewUtils
 #elif UNITY_IOS
             return GameViewSizeGroupType.iOS;
 #endif
+            return GameViewSizeGroupType.Standalone;
         }
     }
 

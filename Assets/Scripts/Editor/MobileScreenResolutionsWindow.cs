@@ -45,6 +45,10 @@ namespace Editor
 
         private void OnGUI()
         {
+#if !UNITY_ANDROID && !UNITY_IOS
+            EditorGUILayout.HelpBox("Please choose Android or iOS", MessageType.Warning);
+            return;
+#endif
             PrintAddAllResolutionsPanel();
             PrintDeleteAllResolutions();
             PrintAllPhones();
@@ -136,7 +140,5 @@ namespace Editor
 
             GameViewUtils.SetSize(GameViewUtils.FindSize(width, height));
         }
-
-      
     }
 }
