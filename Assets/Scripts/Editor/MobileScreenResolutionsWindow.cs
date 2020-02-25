@@ -12,19 +12,19 @@ namespace Editor
     {
         private List<Phone> _phones = new List<Phone>();
 
-        [MenuItem("Etermax/Editor/Resolutions/Open window")]
+        [MenuItem("Window/Mobile Screen Resolutions/Open window")]
         private static void Init()
         {
             GetWindow(typeof(MobileScreenResolutionsWindow), false, "Resolutions").Show();
         }
 
-        [MenuItem("Etermax/Editor/Resolutions/Set next #n")]
+        [MenuItem("Window/Mobile Screen Resolutions/Set next #n")]
         private static void Next()
         {
             GameViewUtils.SetNext();
         }
 
-        [MenuItem("Etermax/Editor/Resolutions/Set previous #p")]
+        [MenuItem("Window/Mobile Screen Resolutions/Set previous #p")]
         private static void Previous()
         {
             GameViewUtils.SetPrevious();
