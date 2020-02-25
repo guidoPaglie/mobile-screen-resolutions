@@ -69,7 +69,10 @@ namespace Editor
         }
 
         private void PrintDeleteAllResolutions()
-        {
+        {        
+            var guiStyle = new GUIStyle() {wordWrap = true, padding = new RectOffset(10, 10, 10, 0)};
+            GUILayout.Label("Remove all the user-resolutions of the dropdown in the game  .", guiStyle);
+            
             if (GUILayout.Button("Remove resolutions"))
             {
                 GameViewUtils.RemoveResolutions();
