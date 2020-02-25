@@ -56,8 +56,7 @@ namespace Editor
 
         private void PrintAddAllResolutionsPanel()
         {
-            var guiStyle = new GUIStyle() {wordWrap = true, padding = new RectOffset(10, 10, 10, 0)};
-            GUILayout.Label("Add all the following resolutions to the dropdown in the game window.", guiStyle);
+            AddLabel("Add all the following resolutions to the dropdown in the game window.");
 
             if (GUILayout.Button("Add resolutions"))
             {
@@ -70,8 +69,7 @@ namespace Editor
 
         private void PrintDeleteAllResolutions()
         {        
-            var guiStyle = new GUIStyle() {wordWrap = true, padding = new RectOffset(10, 10, 10, 0)};
-            GUILayout.Label("Remove all the user-resolutions of the dropdown in the game  .", guiStyle);
+            AddLabel("Remove all the user-resolutions of the dropdown in the game window.");
             
             if (GUILayout.Button("Remove resolutions"))
             {
@@ -142,6 +140,12 @@ namespace Editor
                 GameViewUtils.AddCustomSize(width, height, text);
 
             GameViewUtils.SetSize(GameViewUtils.FindSize(width, height));
+        }
+
+        private static void AddLabel(string text)
+        {
+            var guiStyle = new GUIStyle() {wordWrap = true, padding = new RectOffset(10, 10, 10, 0)};
+            GUILayout.Label(text, guiStyle);
         }
     }
 }
