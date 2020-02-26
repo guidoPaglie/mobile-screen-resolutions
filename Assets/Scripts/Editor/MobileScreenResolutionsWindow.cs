@@ -7,11 +7,11 @@ using UnityEngine;
 namespace Editor
 {
     [ExecuteInEditMode]
-    // ReSharper disable once RequiredBaseTypesIsNotInherited
     public class MobileScreenResolutionsWindow : EditorWindow
     {
         private List<Phone> _phones = new List<Phone>();
-
+        private bool _isPortrait = true;
+        
         [MenuItem("Window/Mobile Screen Resolutions/Open window")]
         private static void Init()
         {
@@ -49,9 +49,15 @@ namespace Editor
             EditorGUILayout.HelpBox("Please choose Android or iOS", MessageType.Warning);
             return;
 #endif
+            PrintLandscapeOrPortraitToggle();
             PrintAddAllResolutionsPanel();
             PrintDeleteAllResolutions();
             PrintAllPhones();
+        }
+
+        private void PrintLandscapeOrPortraitToggle()
+        {
+            _isPortrait = GUILayout.Toggle(_isPortrait, "Is Portrait?");
         }
 
         private void PrintAddAllResolutionsPanel()
@@ -62,7 +68,7 @@ namespace Editor
             {
                 foreach (var phone in _phones)
                 {
-                    Resize(phone.Resolution.Width, phone.Resolution.Height, phone.Name);
+                    AddSizeIfDoesntExists(phone.Resolution.Width, phone.Resolution.Height, phone.Name);
                 }
             }
         }
@@ -120,7 +126,10 @@ namespace Editor
 
         private void DisplayButton(Phone phone)
         {
-            DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip);
+            if (_isPortrait)
+                DisplayButton(phone.Name, phone.Resolution.Width, phone.Resolution.Height, phone.Tooltip);
+            else
+                DisplayButton(phone.Name,phone.Resolution.Height, phone.Resolution.Width, phone.Tooltip);
         }
 
         private void DisplayButton(string text, int width, int height, string tooltip)
@@ -129,17 +138,20 @@ namespace Editor
             var guiStyle = new GUIStyle("button") {alignment = TextAnchor.MiddleLeft};
 
             if (GUILayout.Button(guiContent, guiStyle))
-                Resize(width, height, text);
+                SetSize(width, height, text);
         }
 
-        private void Resize(int width, int height, string text)
+        private void SetSize(int width, int height, string text)
         {
-            // TODO Refactor to not search twice.
+            AddSizeIfDoesntExists(width, height, text);
+            GameViewUtils.SetSize(GameViewUtils.FindSize(width, height));
+        }
+
+        private static void AddSizeIfDoesntExists(int width, int height, string text)
+        {
             var index = GameViewUtils.FindSize(width, height);
             if (index == -1)
                 GameViewUtils.AddCustomSize(width, height, text);
-
-            GameViewUtils.SetSize(GameViewUtils.FindSize(width, height));
         }
 
         private static void AddLabel(string text)
