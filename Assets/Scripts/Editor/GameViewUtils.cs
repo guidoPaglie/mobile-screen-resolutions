@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using UnityEditor;
 
-namespace Editor
+namespace Scripts.Editor
 {
     public static class GameViewUtils
     {

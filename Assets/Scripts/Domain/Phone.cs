@@ -1,6 +1,6 @@
 using System;
 
-namespace Domain
+namespace Scripts.Domain
 {
     [Serializable]
     public class Phone
